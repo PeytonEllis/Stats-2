@@ -1,0 +1,74 @@
+---
+title: "Project 3"
+author: "Peyton Ellis, Emma Heydenberk"
+date: '9/27/19'
+output:
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE,
+                      warnings = FALSE, 
+                      eval = TRUE)
+options(show.signif.stars = FALSE)
+library(readr)
+```
+
+# Title
+```{r}
+require(mosaic)
+require(yarrr)
+require(multcomp)
+require(effects)
+require(readr)
+
+pj <-read_csv("pajamas.csv")
+pj$Lab <-factor(pj$Lab)## sets the lab designations as a categorical variable
+
+favstats(CharLength~Lab, data=pj)
+pirateplot(CharLength~Lab, data=pj, inf.method = "ci", ylab = "Char Length (in)")
+
+## Parametric approach
+pj.lm <-lm(CharLength~Lab, data=pj)
+summary(pj.lm)
+anova(pj.lm)
+
+plot(allEffects(pj.lm))## Effect plot of our one-way ANOVA1
+par(mfrow =c(2, 2))## arranges the diagnostic plots in a 2x2 gridplot(pj.lm)## Non-parametric approach
+Tobs <-anova(lm(CharLength~Lab, data=pj))[1,4]
+Tobs
+par(mfrow=c(1,2))
+B <- 1000
+Tstar <-matrix(NA, nrow=B)
+for(b in (1:B)){
+  Tstar[b] <-anova(lm(CharLength~shuffle(Lab), data=pj))[1,4]
+}
+pdata(Tstar, Tobs, lower.tail=F)[[1]]
+
+hist(Tstar, xlim =c(0, Tobs+3))
+abline(v=Tobs, col="red", lwd=3)
+plot(density(Tstar), xlim=c(0,Tobs+3), main = "Density Curve of Tstar")
+abline(v=Tobs, col="red", lwd=3)
+## Pairwise comparisons
+pj.lm2 <-glht(pj.lm, linfct =mcp(Lab = "Tukey"))
+confint(pj.lm2, level = 0.95)
+
+par(mfrow =c(1, 1))## makes only one plot appear at a timeplot(pj.lm2)
+cld(pj.lm2)
+
+```
+
+## Introduction
+
+## Statistical Procedures
+
+## Summary of Statistical Findings
+
+## Scope of Inference
+
+## Appendix
+
+```{r, echo=TRUE,eval=FALSE}
+
+```
