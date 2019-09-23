@@ -1,6 +1,6 @@
 ---
 title: "Project 3"
-author: "Peyton Ellis, Emma Heydenberk"
+author: "Peyton Ellis, Emma Heydenberk, Brendan Verbrugge"
 date: '9/27/19'
 output:
   word_document: default
@@ -16,13 +16,6 @@ library(readr)
 ```
 
 # Title
-
-**Stats Project 1**
-
-## Introduction
-
-**The following statistical analysis concerns the flammability of children’s sleepwear and the testing methods of five different laboratories. Five different laboratories received eleven samples each of the same fabric to test. Data was obtained by holding the fabric above a 1.5 inch flame for a predetermined period of time. The statistical analysis compares the mean ratings given by each laboratory in order to ensure that their methods are similar. We are interested in finding disparities between testing techniques from company to company and determine testing accuracy.**
-
 ```{r}
 require(mosaic)
 require(yarrr)
@@ -42,16 +35,7 @@ summary(pj.lm)
 anova(pj.lm)
 
 plot(allEffects(pj.lm))## Effect plot of our one-way ANOVA1
-par(mfrow =c(2, 2))## arranges the diagnostic plots in a 2x2 gridplot(pj.lm)
-## Non-parametric approach
-
-par(mfrow=c(1,2))
-set.seed(1)
-y1<-rf(100,5,10)
-lm1<-lm(y1~1)
-plot(lm1,which=2,pch=16)
-plot(density(y1),main="Right Skew")
-
+par(mfrow =c(2, 2))## arranges the diagnostic plots in a 2x2 gridplot(pj.lm)## Non-parametric approach
 Tobs <-anova(lm(CharLength~Lab, data=pj))[1,4]
 Tobs
 par(mfrow=c(1,2))
@@ -75,6 +59,22 @@ cld(pj.lm2)
 
 ```
 
+## Introduction
+
+```{r}
+favstats(CharLength~Lab, data=pj)
+pirateplot(CharLength~Lab, data=pj, inf.method = "ci", ylab = "Char Length (in)")
+```
+
+```{r}
+par(mfrow=c(1,2))
+set.seed(1)
+pj.lm <-lm(CharLength~Lab, data=pj)
+plot(pj.lm,which=2,pch=16)
+plot(pj.lm,pch=16)
+```
+
+
 ## Statistical Procedures
 
 ## Summary of Statistical Findings
@@ -82,7 +82,3 @@ cld(pj.lm2)
 ## Scope of Inference
 
 ## Appendix
-
-```{r, echo=TRUE,eval=FALSE}
-
-```
