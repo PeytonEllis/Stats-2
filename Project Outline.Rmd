@@ -21,7 +21,7 @@ library(readr)
 
 ## Introduction
 
-**The following statistical analysis concerns the flammability of children’s sleepwear and the testing methods of five different laboratories. Five different laboratories received eleven samples each of the same fabric to test. Data was obtained by holding the fabric above a 1.5 inch flame for a predetermined period of time. The statistical analysis compares the mean ratings given by each laboratory in order to ensure that their methods are similar. We are interested in finding disparities between testing techniques from company to company and determine testing accuracy.**
+**The following statistical analysis concerns the flammability of children’s sleepwear and the testing methods of five different laboratories. Five different laboratories received eleven samples each of the same fabric to test and data was obtained by holding the fabric above a 1.5 inch flame for a predetermined period of time. The statistical analysis compares the mean ratings given by each laboratory in order to ensure that their methods are similar. We are interested in finding disparities between testing techniques from company to company and determine testing accuracy.**
 
 ```{r}
 
@@ -37,6 +37,10 @@ pj$Lab <-factor(pj$Lab)## sets the lab designations as a categorical variable
 favstats(CharLength~Lab, data=pj)
 pirateplot(CharLength~Lab, data=pj, inf.method = "ci", ylab = "Char Length (in)")
 ```
+
+## Statistical Procedures
+
+**The explanatory variable for this test is the categorical laboratory variable. The corresponding response variable is the results of the flammability tests. Statistical analysis of the data was done through a parametric one-way ANOVA test. The data consists of five groups for the categorical variable and each fabric only contributed to one data point, meaning there was no violation of independent observations. As can be seen in the fitted vs residual plot, each group showed a similar spread meaning there was no violation of equal variance. Normality is supported by the fit of the observations to the line of the normal Q-Q plot.**
 
 ```{r}
 par(mfrow=c(1,2))
@@ -46,26 +50,9 @@ plot(pj.lm,which=2,pch=16)
 plot(pj.lm,pch=16)
 ```
 
-## Statistical Procedures
-
-**The explanatory variable for this test is the categorical laboratory variable. The corresponding response variable is the results of the flammability tests.
-Statistical analysis of the data was done through a parametric one-way ANOVA test. The data consists of five groups for the categorical variable and each fabric only contributed to one data point, meaning there was no violation of independent observations. As can be seen in the fitted vs residual plot, each group showed a similar spread meaning there was no violation of equal variance. Normality is supported by the fit of the observations to the line of the normal Q-Q plot.**
-
 ## Summary of Statistical Findings
 
 ```{r}
-require(mosaic)
-require(yarrr)
-require(multcomp)
-require(effects)
-require(readr)
-
-pj <-read_csv("pajamas.csv")
-pj$Lab <-factor(pj$Lab)## sets the lab designations as a categorical variable
-
-favstats(CharLength~Lab, data=pj)
-pirateplot(CharLength~Lab, data=pj, inf.method = "ci", ylab = "Char Length (in)")
-
 ## Parametric approach
 pj.lm <-lm(CharLength~Lab, data=pj)
 summary(pj.lm)
