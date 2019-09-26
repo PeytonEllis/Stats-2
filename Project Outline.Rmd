@@ -52,6 +52,10 @@ plot(pj.lm,pch=16)
 
 ## Summary of Statistical Findings
 
+**Because there are multiple levels of one categorical variable, it would be most appropriate to perform a one way ANOVA test to determine the true means of each group. The one way ANOVA test allows for the means of each level of the categorical variable (in this case laboratory) in order to determine if there is a statistically significant difference between the groups.**
+    **The null hypothesis states that the mean rating given by each laboratory will be equal. Under the alternative hypothesis, at least one mean rating will be different.**
+
+
 ```{r}
 ## Parametric approach
 pj.lm <-lm(CharLength~Lab, data=pj)
@@ -60,29 +64,7 @@ anova(pj.lm)
 
 plot(allEffects(pj.lm))## Effect plot of our one-way ANOVA1
 par(mfrow =c(2, 2))## arranges the diagnostic plots in a 2x2 gridplot(pj.lm)
-## Non-parametric approach
 
-par(mfrow=c(1,2))
-set.seed(1)
-y1<-rf(100,5,10)
-lm1<-lm(y1~1)
-plot(lm1,which=2,pch=16)
-plot(density(y1),main="Right Skew")
-
-Tobs <-anova(lm(CharLength~Lab, data=pj))[1,4]
-Tobs
-par(mfrow=c(1,2))
-B <- 1000
-Tstar <-matrix(NA, nrow=B)
-for(b in (1:B)){
-  Tstar[b] <-anova(lm(CharLength~shuffle(Lab), data=pj))[1,4]
-}
-pdata(Tstar, Tobs, lower.tail=F)[[1]]
-
-hist(Tstar, xlim =c(0, Tobs+3))
-abline(v=Tobs, col="red", lwd=3)
-plot(density(Tstar), xlim=c(0,Tobs+3), main = "Density Curve of Tstar")
-abline(v=Tobs, col="red", lwd=3)
 ## Pairwise comparisons
 pj.lm2 <-glht(pj.lm, linfct =mcp(Lab = "Tukey"))
 confint(pj.lm2, level = 0.95)
@@ -97,5 +79,37 @@ cld(pj.lm2)
 ## Appendix
 
 ```{r, echo=TRUE,eval=FALSE}
+require(mosaic)
+require(yarrr)
+require(multcomp)
+require(effects)
+require(readr)
+
+pj <-read_csv("pajamas.csv")
+pj$Lab <-factor(pj$Lab)## sets the lab designations as a categorical variable
+
+favstats(CharLength~Lab, data=pj)
+pirateplot(CharLength~Lab, data=pj, inf.method = "ci", ylab = "Char Length (in)")
+
+par(mfrow=c(1,2))
+set.seed(1)
+pj.lm <-lm(CharLength~Lab, data=pj)
+plot(pj.lm,which=2,pch=16)
+plot(pj.lm,pch=16)
+
+## Parametric approach
+pj.lm <-lm(CharLength~Lab, data=pj)
+summary(pj.lm)
+anova(pj.lm)
+
+plot(allEffects(pj.lm))## Effect plot of our one-way ANOVA1
+par(mfrow =c(2, 2))## arranges the diagnostic plots in a 2x2 gridplot(pj.lm)
+
+## Pairwise comparisons
+pj.lm2 <-glht(pj.lm, linfct =mcp(Lab = "Tukey"))
+confint(pj.lm2, level = 0.95)
+
+par(mfrow =c(1, 1))## makes only one plot appear at a timeplot(pj.lm2)
+cld(pj.lm2)
 
 ```
